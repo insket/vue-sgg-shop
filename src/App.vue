@@ -2,7 +2,8 @@
   <div id="app">
     <Header />
     <router-view />
-    <Footer />
+    <!-- 根据路由元信息meta判断是否显示footer -->
+    <Footer v-show="$route.meta.isFooter"/>
   </div>
 </template>
 
