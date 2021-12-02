@@ -6,8 +6,12 @@
         <!--banner轮播-->
         <div class="swiper-container" id="mySwiper">
           <div class="swiper-wrapper">
-            <div class="swiper-slide">
-              <img src="./images/banner1.jpg" />
+            <div
+              class="swiper-slide"
+              v-for="carousel in banners"
+              :key="carousel.id"
+            >
+              <img :src="carousel.imgUrl" />
             </div>
           </div>
           <!-- 如果需要分页器 -->
@@ -92,16 +96,43 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
+import Swiper from "swiper";
 export default {
   name: "",
   data() {
     return {};
   },
-  components: {},
-  props: {},
-  computed: {},
-  watch: {},
-  methods: {},
+  mounted() {
+    this.$store.dispatch("bannerList");
+  },
+  computed: {
+    ...mapState({
+      banners: (state) => state.home.banners,
+    }),
+  },
+  watch: {
+    banners: {
+      handler() {
+        this.$nextTick(() => {
+           new Swiper("#mySwiper", {
+            loop: true, // 循环模式选项
+            // 如果需要分页器
+            pagination: {
+              el: ".swiper-pagination",
+              clickable: true,
+            },
+            autoplay: true,
+            // 如果需要前进后退按钮
+            navigation: {
+              nextEl: ".swiper-button-next",
+              prevEl: ".swiper-button-prev",
+            },
+          });
+        })
+      },
+    },
+  },
 };
 </script>
 
