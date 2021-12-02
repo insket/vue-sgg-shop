@@ -9,12 +9,17 @@
             <!--  一级分类 -->
             <div
               class="item"
+              :class="{ on: currentIndex === index }"
               v-for="(catItem1, index) in category"
               :key="catItem1.categoryId"
-              :class="{ on: currentIndex === index }"
+              @click="goSearch"
             >
               <h3 @mouseenter="changeIndex(index)">
-                <a>{{ catItem1.categoryName }}</a>
+                <a
+                  :data-catName="catItem1.categoryName"
+                  :data-catName1id="catItem1.categoryId"
+                  >{{ catItem1.categoryName }}</a
+                >
               </h3>
               <div
                 class="item-list clearfix"
@@ -28,7 +33,11 @@
                 >
                   <dl class="fore">
                     <dt>
-                      <a>{{ catItem2.categoryName }}</a>
+                      <a
+                        :data-catName="catItem2.categoryName"
+                        :data-catName2id="catItem2.categoryId"
+                        >{{ catItem2.categoryName }}</a
+                      >
                     </dt>
                     <dd>
                       <!--  三级分类 -->
@@ -36,7 +45,11 @@
                         v-for="catItem3 in catItem2.categoryChild"
                         :key="catItem3.categoryId"
                       >
-                        <a>{{ catItem3.categoryName }}</a>
+                        <a
+                          :data-catName="catItem3.categoryName"
+                          :data-catName3id="catItem3.categoryId"
+                          >{{ catItem3.categoryName }}</a
+                        >
                       </em>
                     </dd>
                   </dl>
@@ -62,7 +75,7 @@
 
 <script>
 import { mapState } from "vuex";
-import {throttle} from 'loadsh'
+import { throttle } from "loadsh";
 export default {
   name: "TypeNav",
   data() {
@@ -70,22 +83,49 @@ export default {
       currentIndex: -1, // 鼠标移入分类的index
     };
   },
+
   mounted() {
     this.$store.dispatch("categoryList");
   },
+
   computed: {
     ...mapState({
       category: (state) => state.home.category,
     }),
   },
+
   methods: {
     // 鼠标进入修改currentIndex的回调  节流
-    changeIndex: throttle(function(index) {
+    changeIndex: throttle(function (index) {
       this.currentIndex = index;
-    }, 50),
+    }, 20),
+
     // 鼠标移出的回调, 将currentIndex改为-1变成不选中
     leaveIndex() {
       this.currentIndex = -1;
+    },
+
+    // 点击分类跳转到search
+    goSearch(event) {
+      // console.log(event.target.dataset);
+      let { catname, catname1id, catname2id, catname3id } = event.target.dataset;
+      // 判断点击的是否是a标签
+      if (catname) {
+        let location = { name: "search" };
+        let query = { catname: catname };
+
+        if (catname1id) {
+          query.catname1id = catname1id;
+        } else if (catname2id) {
+          query.catname2id = catname2id;
+        } else {
+          query.catname3id = catname3id;
+        }
+
+        // 拼接路由参数
+        location.query = query
+        this.$router.push(location)
+      }
     },
   },
 };
