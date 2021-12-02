@@ -2,62 +2,66 @@
   <!-- 商品分类导航 -->
   <div class="type-nav">
     <div class="container">
-      <div @mouseleave="leaveIndex">
+      <div @mouseleave="leaveIndex" @mouseenter="enterShow">
         <h2 class="all">全部商品分类</h2>
-        <div class="sort">
-          <div class="all-sort-list2">
-            <!--  一级分类 -->
-            <div
-              class="item"
-              :class="{ on: currentIndex === index }"
-              v-for="(catItem1, index) in category"
-              :key="catItem1.categoryId"
-              @click="goSearch"
-            >
-              <h3 @mouseenter="changeIndex(index)">
-                <a
-                  :data-catName="catItem1.categoryName"
-                  :data-catName1id="catItem1.categoryId"
-                  >{{ catItem1.categoryName }}</a
-                >
-              </h3>
+        <Transition name="sort">
+          <div class="sort" v-show="isShow">
+            <div class="all-sort-list2">
+              <!--  一级分类 -->
               <div
-                class="item-list clearfix"
-                :style="{ display: currentIndex === index ? 'block' : 'none' }"
+                class="item"
+                :class="{ on: currentIndex === index }"
+                v-for="(catItem1, index) in category"
+                :key="catItem1.categoryId"
+                @click="goSearch"
               >
-                <!--  二级分类 -->
+                <h3 @mouseenter="changeIndex(index)">
+                  <a
+                    :data-catName="catItem1.categoryName"
+                    :data-catName1id="catItem1.categoryId"
+                    >{{ catItem1.categoryName }}</a
+                  >
+                </h3>
                 <div
-                  class="subitem"
-                  v-for="catItem2 in catItem1.categoryChild"
-                  :key="catItem2.categoryId"
+                  class="item-list clearfix"
+                  :style="{
+                    display: currentIndex === index ? 'block' : 'none',
+                  }"
                 >
-                  <dl class="fore">
-                    <dt>
-                      <a
-                        :data-catName="catItem2.categoryName"
-                        :data-catName2id="catItem2.categoryId"
-                        >{{ catItem2.categoryName }}</a
-                      >
-                    </dt>
-                    <dd>
-                      <!--  三级分类 -->
-                      <em
-                        v-for="catItem3 in catItem2.categoryChild"
-                        :key="catItem3.categoryId"
-                      >
+                  <!--  二级分类 -->
+                  <div
+                    class="subitem"
+                    v-for="catItem2 in catItem1.categoryChild"
+                    :key="catItem2.categoryId"
+                  >
+                    <dl class="fore">
+                      <dt>
                         <a
-                          :data-catName="catItem3.categoryName"
-                          :data-catName3id="catItem3.categoryId"
-                          >{{ catItem3.categoryName }}</a
+                          :data-catName="catItem2.categoryName"
+                          :data-catName2id="catItem2.categoryId"
+                          >{{ catItem2.categoryName }}</a
                         >
-                      </em>
-                    </dd>
-                  </dl>
+                      </dt>
+                      <dd>
+                        <!--  三级分类 -->
+                        <em
+                          v-for="catItem3 in catItem2.categoryChild"
+                          :key="catItem3.categoryId"
+                        >
+                          <a
+                            :data-catName="catItem3.categoryName"
+                            :data-catName3id="catItem3.categoryId"
+                            >{{ catItem3.categoryName }}</a
+                          >
+                        </em>
+                      </dd>
+                    </dl>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        </Transition>
       </div>
       <nav class="nav">
         <a href="###">服装城</a>
@@ -81,11 +85,15 @@ export default {
   data() {
     return {
       currentIndex: -1, // 鼠标移入分类的index
+      isShow: true, // 三级联动是否展示
     };
   },
 
   mounted() {
-    this.$store.dispatch("categoryList");
+    // 判断当前路由是不是home
+    if (this.$route.path !== "/home") {
+      this.isShow = false;
+    }
   },
 
   computed: {
@@ -100,19 +108,25 @@ export default {
       this.currentIndex = index;
     }, 20),
 
-    // 鼠标移出的回调, 将currentIndex改为-1变成不选中
+    // 鼠标移出的回调
     leaveIndex() {
+      // 将currentIndex改为-1变成不选中
       this.currentIndex = -1;
+      // 鼠标移出隐藏三级分类
+      if (this.$route.path !== "/home") {
+        this.isShow = false;
+      }
     },
 
     // 点击分类跳转到search
     goSearch(event) {
       // console.log(event.target.dataset);
-      let { catname, catname1id, catname2id, catname3id } = event.target.dataset;
+      const { catname, catname1id, catname2id, catname3id } =
+        event.target.dataset;
       // 判断点击的是否是a标签
       if (catname) {
-        let location = { name: "search" };
-        let query = { catname: catname };
+        const location = { name: "search" };
+        const query = { catname: catname };
 
         if (catname1id) {
           query.catname1id = catname1id;
@@ -123,8 +137,18 @@ export default {
         }
 
         // 拼接路由参数
-        location.query = query
-        this.$router.push(location)
+        if (this.$route.params) {
+          location.params = this.$route.params
+          location.query = query;
+          this.$router.push(location);
+        }
+      }
+    },
+
+    // 鼠标移入展示三级联动
+    enterShow() {
+      if (this.$route.path !== "/home") {
+        this.isShow = true;
       }
     },
   },
@@ -254,6 +278,17 @@ export default {
           background-color: #ccc;
         }
       }
+    }
+
+    // 过度样式
+    .sort-enter {
+      height: 0;
+    }
+    .sort-enter-to {
+      height: 470px;
+    }
+    .sort-enter-active {
+      transition: all 0.3s linear;
     }
   }
 }

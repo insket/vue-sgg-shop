@@ -3,22 +3,24 @@
     <Header />
     <router-view />
     <!-- 根据路由元信息meta判断是否显示footer -->
-    <Footer v-show="$route.meta.isFooter"/>
+    <Footer v-show="$route.meta.isFooter" />
   </div>
 </template>
 
 <script>
-import Header from './components/Header'
-import Footer from './components/Footer'
+import Header from "./components/Header";
+import Footer from "./components/Footer";
 export default {
-  name: 'App',
+  name: "App",
   components: {
     Header,
-    Footer
-  }
-}
+    Footer,
+  },
+  mounted() {
+    this.$store.dispatch("categoryList");
+  },
+};
 </script>
 
 <style>
-
 </style>

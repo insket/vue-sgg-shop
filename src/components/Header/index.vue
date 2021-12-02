@@ -7,8 +7,8 @@
           <p>尚品汇欢迎您！</p>
           <p>
             <span>请</span>
-            <router-link to='/login'>登录</router-link>
-            <router-link to='/register' class="register">免费注册</router-link>
+            <router-link to="/login">登录</router-link>
+            <router-link to="/register" class="register">免费注册</router-link>
           </p>
         </div>
         <div class="typeList">
@@ -26,7 +26,7 @@
     <!--头部第二行 搜索区域-->
     <div class="bottom">
       <h1 class="logoArea">
-        <router-link class="logo" to='/'>
+        <router-link class="logo" to="/">
           <img src="./images/logo.png" alt="" />
         </router-link>
       </h1>
@@ -37,8 +37,13 @@
             id="autocomplete"
             class="input-error input-xxlarge"
             v-model="keyword"
+            @keydown="enterSearch"
           />
-          <button class="sui-btn btn-xlarge btn-danger" type="button" @click="goSearch">
+          <button
+            class="sui-btn btn-xlarge btn-danger"
+            type="button"
+            @click="goSearch"
+          >
             搜索
           </button>
         </form>
@@ -52,7 +57,7 @@ export default {
   name: "Header",
   data() {
     return {
-      keyword: '' // input值
+      keyword: "", // input值
     };
   },
   components: {},
@@ -63,11 +68,27 @@ export default {
     // 搜索的回调
     goSearch() {
       // 判断输入是否为空格或没有输入
-      if (this.keyword.trim().length === 0)  return alert('没有输入搜索内容哦')
+      if (this.keyword.trim().length === 0) return alert("没有输入搜索内容哦");
 
-      // 携带 input的keyword
-      this.$router.push({name: 'search', params:{keyword: this.keyword}})
-    }
+      if (this.$route.query) {
+        let loaction = { name: "search", params: { keyword: this.keyword } };
+        loaction.query = this.$route.query;
+        // 携带 input的keyword
+        this.$router.push(loaction);
+      }
+    },
+    // 按下 enter 跳转search
+    enterSearch(event) {
+      if (event.keyCode === 13) {
+        event.preventDefault();
+        if (this.$route.query) {
+          let loaction = { name: "search", params: { keyword: this.keyword } };
+          loaction.query = this.$route.query;
+          // 携带 input的keyword
+          this.$router.push(loaction);
+        }
+      }
+    },
   },
 };
 </script>
