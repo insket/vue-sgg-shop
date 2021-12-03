@@ -30,3 +30,14 @@ export const reqFloorList = () => {
     url: 'floor'
   })
 }
+
+/*
+    搜索 数据
+*/
+export const reqSearchList = (data) => {
+  return request({
+    method: 'post',
+    url: '/api/list',
+    data
+  })
+}

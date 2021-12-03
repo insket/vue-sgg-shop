@@ -75,6 +75,7 @@ export default {
         loaction.query = this.$route.query;
         // 携带 input的keyword
         this.$router.push(loaction);
+        this.keyword = ''
       }
     },
     // 按下 enter 跳转search
@@ -86,6 +87,7 @@ export default {
           loaction.query = this.$route.query;
           // 携带 input的keyword
           this.$router.push(loaction);
+          this.keyword = ''
         }
       }
     },
