@@ -20,3 +20,13 @@ export const reqBannerList = () => {
     url: 'banner'
   })
 }
+
+/*
+    floor 数据
+*/
+export const reqFloorList = () => {
+  return mockRequest({
+    method: 'get',
+    url: 'floor'
+  })
+}
