@@ -35,23 +35,19 @@
           <div class="sui-navbar">
             <div class="navbar-inner filter">
               <ul class="sui-nav">
-                <li class="active">
-                  <a href="#">综合</a>
+                <li :class="{ active: isOne }" @click="changeOrder(1)">
+                  <a
+                    >综合<span v-show="isOne">{{
+                      searchParams.order.includes("desc") ? "⬇" : "⬆"
+                    }}</span></a
+                  >
                 </li>
-                <li>
-                  <a href="#">销量</a>
-                </li>
-                <li>
-                  <a href="#">新品</a>
-                </li>
-                <li>
-                  <a href="#">评价</a>
-                </li>
-                <li>
-                  <a href="#">价格⬆</a>
-                </li>
-                <li>
-                  <a href="#">价格⬇</a>
+                <li :class="{ active: isTwo }" @click="changeOrder(2)">
+                  <a
+                    >价格<span v-show="isTwo">{{
+                      searchParams.order.includes("desc") ? "⬇" : "⬆"
+                    }}</span></a
+                  >
                 </li>
               </ul>
             </div>
@@ -152,7 +148,8 @@ export default {
         category3Id: "",
         categoryName: "",
         keyword: "",
-        order: "",
+        // 排序 1:desc  综合|降序   2|asc
+        order: "1:desc",
         pageNo: 1,
         pageSize: 10,
         props: [],
@@ -174,6 +171,14 @@ export default {
   },
   computed: {
     ...mapGetters(["goodsList"]),
+    // 判断点击的排序是否是综合
+    isOne() {
+      return this.searchParams.order.indexOf("1") !== -1;
+    },
+    // 判断点击的排序是否是价格
+    isTwo() {
+      return this.searchParams.order.indexOf("2") !== -1;
+    },
   },
   methods: {
     // 获取search数据
@@ -220,6 +225,21 @@ export default {
       // 重新发送请求
       this.getSarchData();
     },
+    // 切换排序方式
+    changeOrder(order) {
+      // 获取起始状态
+      let orginOrder = this.searchParams.order
+      let orginFlag = orginOrder.split(':')[0]
+      let orginSort = orginOrder.split(':')[1]
+      // 如果点击的是综合，切换排序
+      if (order === orginFlag * 1 && order === 1) {
+        this.searchParams.order  =`1:${orginSort === 'desc' ? 'asc' : 'desc'}`
+      } else {
+        this.searchParams.order  =`2:${orginSort === 'desc' ? 'asc' : 'desc'}`
+      }
+      // 发发送请求
+      this.getSarchData()
+    }
   },
   watch: {
     // 监听路由信息是否发生变化
