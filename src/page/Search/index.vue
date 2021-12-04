@@ -32,6 +32,7 @@
 
         <!--details-->
         <div class="details clearfix">
+          <!-- 排序分类 -->
           <div class="sui-navbar">
             <div class="navbar-inner filter">
               <ul class="sui-nav">
@@ -97,35 +98,8 @@
               </li>
             </ul>
           </div>
-          <div class="fr page">
-            <div class="sui-pagination clearfix">
-              <ul>
-                <li class="prev disabled">
-                  <a href="#">«上一页</a>
-                </li>
-                <li class="active">
-                  <a href="#">1</a>
-                </li>
-                <li>
-                  <a href="#">2</a>
-                </li>
-                <li>
-                  <a href="#">3</a>
-                </li>
-                <li>
-                  <a href="#">4</a>
-                </li>
-                <li>
-                  <a href="#">5</a>
-                </li>
-                <li class="dotted"><span>...</span></li>
-                <li class="next">
-                  <a href="#">下一页»</a>
-                </li>
-              </ul>
-              <div><span>共10页&nbsp;</span></div>
-            </div>
-          </div>
+          <!-- 分页器 -->
+          <Pagination :pageNo='29' :pageSize='3' :total='91' :continues='5'/>
         </div>
       </div>
     </div>
@@ -228,18 +202,18 @@ export default {
     // 切换排序方式
     changeOrder(order) {
       // 获取起始状态
-      let orginOrder = this.searchParams.order
-      let orginFlag = orginOrder.split(':')[0]
-      let orginSort = orginOrder.split(':')[1]
+      let orginOrder = this.searchParams.order;
+      // let orginFlag = orginOrder.split(":")[0];
+      let orginSort = orginOrder.split(":")[1];
       // 如果点击的是综合，切换排序
-      if (order === orginFlag * 1 && order === 1) {
-        this.searchParams.order  =`1:${orginSort === 'desc' ? 'asc' : 'desc'}`
+      if (order === 1) {
+        this.searchParams.order = `1:${orginSort === "desc" ? "asc" : "desc"}`;
       } else {
-        this.searchParams.order  =`2:${orginSort === 'desc' ? 'asc' : 'desc'}`
+        this.searchParams.order = `2:${orginSort === "desc" ? "asc" : "desc"}`;
       }
       // 发发送请求
-      this.getSarchData()
-    }
+      this.getSarchData();
+    },
   },
   watch: {
     // 监听路由信息是否发生变化
