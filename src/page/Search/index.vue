@@ -11,15 +11,24 @@
             </li>
           </ul>
           <ul class="fl sui-tag">
-            <li class="with-x">手机</li>
-            <li class="with-x">iphone<i>×</i></li>
-            <li class="with-x">华为<i>×</i></li>
-            <li class="with-x">OPPO<i>×</i></li>
+            <!-- 分类标签 -->
+            <li class="with-x" v-if="searchParams.categoryName">
+              {{ searchParams.categoryName }}<i @click="removeCateName">×</i>
+            </li>
+            <!-- 搜索关键字 -->
+            <li class="with-x" v-if="searchParams.keyword">
+              {{ searchParams.keyword }}<i @click="removeKeyword">×</i>
+            </li>
+            <!-- 品牌 -->
+            <li class="with-x" v-if="searchParams.trademark">
+              {{ searchParams.trademark.slice(2)
+              }}<i @click="removeTrademark">×</i>
+            </li>
           </ul>
         </div>
 
         <!--selector-->
-        <SearchSelector />
+        <SearchSelector @trademarkInfo="trademarkInfo" />
 
         <!--details-->
         <div class="details clearfix">
@@ -171,6 +180,46 @@ export default {
     getSarchData() {
       this.$store.dispatch("getSearchList", this.searchParams);
     },
+    // 删除分类标签
+    removeCateName() {
+      // 清空搜索条件   设置为undefined可以将没有数据的参数不带给服务器
+      this.searchParams.categoryName = undefined;
+      this.searchParams.category1Id = undefined;
+      this.searchParams.category2Id = undefined;
+      this.searchParams.category3Id = undefined;
+      // 重新发送请求
+      this.getSarchData();
+      // 路由跳转 如果有params参数,携带params参数发跳转
+      if (this.$route.params) {
+        this.$router.push({ name: "search", params: this.$route.params });
+      } else {
+        this.$router.push({ name: "search" });
+      }
+    },
+    // 删除搜索关键字标签
+    removeKeyword() {
+      this.searchParams.keyword = undefined;
+      // 重新发送请求
+      this.getSarchData();
+      // 路由跳转 如果有params参数,携带params参数发跳转
+      if (this.$route.query) {
+        this.$router.push({ name: "search", query: this.$route.query });
+      } else {
+        this.$router.push({ name: "search" });
+      }
+    },
+    // 自定义事件 trademarkInfo
+    trademarkInfo(trademark) {
+      this.searchParams.trademark = `${trademark.tmId}:${trademark.tmName}`;
+      // 重新发送请求
+      this.getSarchData();
+    },
+    // 删除 品牌 标签
+    removeTrademark() {
+      this.searchParams.trademark = undefined;
+      // 重新发送请求
+      this.getSarchData();
+    },
   },
   watch: {
     // 监听路由信息是否发生变化
@@ -181,12 +230,13 @@ export default {
       this.searchParams.category3Id = this.$route.query.catname3id;
       this.searchParams.categoryName = this.$route.query.catname;
       this.searchParams.keyword = this.$route.params.keyword;
+
       this.getSarchData();
 
       // 请求结束清空搜索条件 接受下一次
-      this.searchParams.category1Id = ''
-      this.searchParams.category2Id = ''
-      this.searchParams.category3Id = ''
+      this.searchParams.category1Id = undefined;
+      this.searchParams.category2Id = undefined;
+      this.searchParams.category3Id = undefined;
     },
   },
 };

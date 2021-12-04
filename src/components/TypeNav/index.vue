@@ -138,7 +138,7 @@ export default {
 
         // 拼接路由参数
         if (this.$route.params) {
-          location.params = this.$route.params
+          location.params = this.$route.params;
           location.query = query;
           this.$router.push(location);
         }

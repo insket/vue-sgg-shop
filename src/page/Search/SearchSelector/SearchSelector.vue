@@ -3,8 +3,8 @@
     <div class="type-wrap logo">
       <div class="fl key brand">品牌</div>
       <div class="value logos">
-        <ul class="logo-list">
-          <li v-for="trademark in trademarkList" :key="trademark.id">{{trademark.tmName}}</li>
+        <ul class="logo-list" v-for="trademark in trademarkList" :key="trademark.id">
+          <li @click="clickBrand(trademark)">{{trademark.tmName}}</li>
         </ul>
       </div>
       <div class="ext">
@@ -32,7 +32,13 @@ import { mapGetters } from 'vuex'
     name: 'SearchSelector',
     computed: {
       ...mapGetters(['attrsList', 'trademarkList'])
-    }
+    },
+    methods: {
+      // 点击品牌
+      clickBrand(trademark) {
+        this.$emit('trademarkInfo', trademark)
+      }
+    },
   }
 </script>
 
