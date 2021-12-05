@@ -99,7 +99,13 @@
             </ul>
           </div>
           <!-- 分页器 -->
-          <Pagination :pageNo='29' :pageSize='3' :total='91' :continues='5'/>
+          <Pagination
+            :pageNo="searchParams.pageNo"
+            :pageSize="searchParams.pageSize"
+            :total="toatl"
+            :continues="5"
+            @getPageNo="getPageNo"
+          />
         </div>
       </div>
     </div>
@@ -107,7 +113,7 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters, mapState } from "vuex";
 import SearchSelector from "./SearchSelector/SearchSelector";
 export default {
   name: "Search",
@@ -125,7 +131,7 @@ export default {
         // 排序 1:desc  综合|降序   2|asc
         order: "1:desc",
         pageNo: 1,
-        pageSize: 10,
+        pageSize: 3,
         props: [],
         trademark: "",
       },
@@ -145,6 +151,9 @@ export default {
   },
   computed: {
     ...mapGetters(["goodsList"]),
+    ...mapState({
+      toatl: (state) => state.search.searchList.total,
+    }),
     // 判断点击的排序是否是综合
     isOne() {
       return this.searchParams.order.indexOf("1") !== -1;
@@ -212,6 +221,12 @@ export default {
         this.searchParams.order = `2:${orginSort === "desc" ? "asc" : "desc"}`;
       }
       // 发发送请求
+      this.getSarchData();
+    },
+    // 自定义事件 获取当前第几页
+    getPageNo(pageNo) {
+      this.searchParams.pageNo = pageNo;
+      // 发送请求
       this.getSarchData();
     },
   },

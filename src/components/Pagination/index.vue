@@ -1,21 +1,49 @@
 <template>
   <div class="pagination">
-    <button>1</button>
-    <button>上一页</button>
-    <button>···</button>
+    <!-- 上 -->
+    <button :disabled="pageNo === 1" @click="$emit('getPageNo', pageNo - 1)">
+      上一页
+    </button>
+    <button
+      :class="{ active: pageNo === 1 }"
+      v-if="startNumAndEndNum[0] > 1"
+      @click="$emit('getPageNo', 1)"
+    >
+      1
+    </button>
+    <button v-if="startNumAndEndNum[0] > 2">···</button>
 
-    <button>3</button>
-    <button>4</button>
-    <button>5</button>
-    <button>6</button>
-    <button>7</button>
+    <!-- 分页器中间部分 -->
+    <button
+      :class="{ active: pageNo === page }"
+      v-for="page in startNumAndEndNum"
+      :key="page"
+      @click="$emit('getPageNo', page)"
+    >
+      {{ page }}
+    </button>
 
-    <button>···</button>
-    <button>{{ totalPage }}</button>
-    <button>下一页</button>
+    <!-- 下 -->
+    <button
+      v-if="startNumAndEndNum[startNumAndEndNum.length - 1] < totalPage - 1"
+    >
+      ···
+    </button>
+    <button
+      :class="{ active: pageNo === totalPage }"
+      v-if="startNumAndEndNum[startNumAndEndNum.length - 1] < totalPage"
+      @click="$emit('getPageNo', totalPage)"
+    >
+      {{ totalPage }}
+    </button>
+    <button
+      :disabled="pageNo === totalPage"
+      @click="$emit('getPageNo', pageNo + 1)"
+    >
+      下一页
+    </button>
 
     <button style="margin-left: 30px">共 {{ total }} 条</button>
-    <p>{{ startNumAndEndNum }} --- {{ pageNo }}</p>
   </div>
 </template>
 
@@ -32,7 +60,8 @@ export default {
     startNumAndEndNum() {
       const { totalPage, continues, pageNo } = this;
       let start = 0,
-        end = 0;
+        end = 0,
+        pageArr = [];
 
       // 总页数小于连续页码
       if (totalPage < continues) {
@@ -48,12 +77,18 @@ export default {
         } else if (pageNo >= totalPage - parseInt(continues / 2)) {
           start = totalPage - continues + 1;
           end = totalPage;
-        } else {   // [正常情况]
+        } else {
+          // [正常情况]
           start = pageNo - parseInt(continues / 2);
           end = pageNo + parseInt(continues / 2);
         }
       }
-      return { start, end };
+      //  返回的page数组
+      for (let i = start; i < continues + start; i++) {
+        console.log(end);
+        pageArr.push(i);
+      }
+      return pageArr;
     },
   },
 };
