@@ -60,7 +60,7 @@ const routes = [
     }
   },
   {
-    path: '/detail/:skuid',
+    path: '/detail/:skuId',
     name: 'detail',
     component: () => import('@/page/Detail'),
     meta: {

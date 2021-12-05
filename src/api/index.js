@@ -41,3 +41,13 @@ export const reqSearchList = (data) => {
     data
   })
 }
+
+/*
+    商品详情 数据
+*/
+export const reqGoodList = (skuid) => {
+  return request({
+    method: 'get',
+    url: `/api/item/${skuid}`,
+  })
+}

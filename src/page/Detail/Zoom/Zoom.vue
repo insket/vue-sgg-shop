@@ -1,17 +1,55 @@
 <template>
   <div class="spec-preview">
-    <img src="../images/s1.png" />
-    <div class="event"></div>
+    <img :src="imgObj.imgUrl" />
+    <div class="event" @mousemove="handler"></div>
     <div class="big">
-      <img src="../images/s1.png" />
+      <img :src="imgObj.imgUrl" ref='big'/>
     </div>
-    <div class="mask"></div>
+    <!-- 遮罩 -->
+    <div class="mask" ref="mask"></div>
   </div>
 </template>
 
 <script>
   export default {
     name: "Zoom",
+    props: ['skuImageList'],
+    data() {
+      return {
+        currentIndex: 0
+      }
+    },
+    mounted() {
+      this.$bus.$on('getIndex', (index) => {
+        this.currentIndex = index
+      })
+    },
+    computed: {
+      // 避免数据没回来渲染报错
+      imgObj() {
+        return this.skuImageList[this.currentIndex] || {}
+      }
+    },
+    methods: {
+      handler(event) {
+        let mask = this.$refs.mask
+        let big = this.$refs.big
+
+        let left = event.offsetX - mask.offsetWidth / 2
+        let top = event.offsetY - mask.offsetHeight / 2
+        // 限制范围
+        if (left <= 0) return left = 0
+        if(left >= mask.offsetWidth) return left = mask.offsetWidth
+        if(top <= 0) return top = 0
+        if(top >= mask.offsetHeight) return top = mask.offsetHeight
+
+        // 修改元素的left/ top
+        mask.style.left = left + 'px'
+        mask.style.top = top + 'px'
+        big.style.left = -2 * left + 'px'
+        big.style.top = -2 * top + 'px'
+      }
+    },
   }
 </script>
 
