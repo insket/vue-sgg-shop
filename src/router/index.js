@@ -24,40 +24,55 @@ VueRouter.prototype.replace = function(location, reslove, reject) {
   }
 }
 
-export default new VueRouter({
-  routes: [
-    {
-      path: '/',
-      redirect: '/home'
-    },
-    {
-      path: '/home',
-      component: () => import('@/page/Home'),
-      meta: {
-        isFooter: true
-      }
-    },
-    {
-      path: '/login',
-      component: () => import('@/page/Login'),
-      meta: {
-        isFooter: false
-      }
-    },
-    {
-      path: '/register',
-      component: () => import('@/page/Register'),
-      meta: {
-        isFooter: false
-      }
-    },
-    {
-      path: '/search/:keyword?',
-      name: 'search',
-      component: () => import('@/page/Search'),
-      meta: {
-        isFooter: true
-      }
+//路由配置
+const routes = [
+  {
+    path: '/',
+    redirect: '/home'
+  },
+  {
+    path: '/home',
+    component: () => import('@/page/Home'),
+    meta: {
+      isFooter: true
     }
-  ]
+  },
+  {
+    path: '/login',
+    component: () => import('@/page/Login'),
+    meta: {
+      isFooter: false
+    }
+  },
+  {
+    path: '/register',
+    component: () => import('@/page/Register'),
+    meta: {
+      isFooter: false
+    }
+  },
+  {
+    path: '/search/:keyword?',
+    name: 'search',
+    component: () => import('@/page/Search'),
+    meta: {
+      isFooter: true
+    }
+  },
+  {
+    path: '/detail/:skuid',
+    name: 'detail',
+    component: () => import('@/page/Detail'),
+    meta: {
+      isFooter: true
+    }
+  }
+]
+
+export default new VueRouter({
+  routes,
+  // 滚动行为
+  scrollBehavior () {
+    return {y: 0}
+  }
 })
