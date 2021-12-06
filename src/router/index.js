@@ -74,6 +74,14 @@ const routes = [
     meta: {
       isFooter: true
     }
+  },
+  {
+    path: '/shopcart',
+    name: 'shopcart',
+    component: () => import('@/page/ShopCart'),
+    meta: {
+      isFooter: true
+    }
   }
 ]
 

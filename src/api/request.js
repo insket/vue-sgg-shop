@@ -1,4 +1,5 @@
 import axios from 'axios';
+import store from '@/store'
 import nprogress from 'nprogress'
 import 'nprogress/nprogress.css'
 
@@ -8,6 +9,10 @@ const request = axios.create({
 })
 
 request.interceptors.request.use((config) => {
+  // 请求头添加字段
+  if (store.state.detail.uuid_token) {
+    config.headers.userTempId = store.state.detail.uuid_token
+  }
   // nprogress进度条开始
   nprogress.start()
   return config

@@ -1,8 +1,10 @@
+import getUUID from '@/utils/uuid_token'
 import { reqGoodList, reqAddOrUpdataShopCart } from '@/api'
 import router from '@/router'
 
 const state = {
-  goods: {} //商品列表
+  goods: {}, //商品列表
+  uuid_token: getUUID()  // uuid
 }
 
 const mutations = {

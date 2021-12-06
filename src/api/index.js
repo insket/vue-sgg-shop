@@ -61,3 +61,13 @@ export const reqAddOrUpdataShopCart = (skuId, skuNum) => {
     url: `/api/cart/addToCart/${skuId}/${skuNum}`,
   })
 }
+
+/*
+    获取购物车列表
+*/
+export const reqCartList = () => {
+  return request({
+    method: 'get',
+    url: `/api/cart/cartList`,
+  })
+}

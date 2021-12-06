@@ -42,7 +42,7 @@
                 </div>
                 <div class="price">
                   <i>¥</i>
-                  <em>{{skuInfo.price}}</em>
+                  <em>{{ skuInfo.price }}</em>
                   <span>降价通知</span>
                 </div>
                 <div class="remark">
@@ -405,7 +405,7 @@ export default {
       let cart = {
         skuNum: this.skuNum,
         skuId: this.$route.params.skuId,
-        skuInfo: this.skuInfo
+        skuInfo: this.skuInfo,
       };
       this.$store.dispatch("addOrUpdataShopCart", cart);
     },
