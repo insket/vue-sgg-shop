@@ -42,7 +42,7 @@
                 </div>
                 <div class="price">
                   <i>¥</i>
-                  <em></em>
+                  <em>{{skuInfo.price}}</em>
                   <span>降价通知</span>
                 </div>
                 <div class="remark">
@@ -87,8 +87,13 @@
                   changepirce="0"
                   v-for="subSpuSaleAttr in spuSaleAttr.spuSaleAttrValueList"
                   :key="subSpuSaleAttr.id"
-                  :class="{'active':subSpuSaleAttr.isChecked === '1'}"
-                  @click="changActive(subSpuSaleAttr, spuSaleAttr.spuSaleAttrValueList)"
+                  :class="{ active: subSpuSaleAttr.isChecked === '1' }"
+                  @click="
+                    changActive(
+                      subSpuSaleAttr,
+                      spuSaleAttr.spuSaleAttrValueList
+                    )
+                  "
                 >
                   {{ subSpuSaleAttr.saleAttrValueName }}
                 </dd>
@@ -96,12 +101,22 @@
             </div>
             <div class="cartWrap">
               <div class="controls">
-                <input autocomplete="off" class="itxt" />
-                <a href="javascript:" class="plus">+</a>
-                <a href="javascript:" class="mins">-</a>
+                <input
+                  autocomplete="off"
+                  class="itxt"
+                  v-model="skuNum"
+                  @change="changeSkuNum"
+                />
+                <a href="javascript:" class="plus" @click="skuNum++">+</a>
+                <a
+                  href="javascript:"
+                  class="mins"
+                  @click="skuNum > 1 ? skuNum-- : (skuNum = 1)"
+                  >-</a
+                >
               </div>
               <div class="add">
-                <a href="javascript:">加入购物车</a>
+                <a @click="addShopCart">加入购物车</a>
               </div>
             </div>
           </div>
@@ -350,6 +365,11 @@ export default {
     ImageList,
     Zoom,
   },
+  data() {
+    return {
+      skuNum: 1, // 购买商品的个数
+    };
+  },
   mounted() {
     // 派发 getGoodsList
     this.$store.dispatch("getGoodsList", this.$route.params.skuId);
@@ -361,15 +381,34 @@ export default {
     },
   },
   methods: {
-    // 点击切换商品属性值 
+    // 点击切换商品属性值
     changActive(attrValue, arr) {
       // 将全部isChecked变为0
-      arr.forEach(item => {
-        item.isChecked = '0'
+      arr.forEach((item) => {
+        item.isChecked = "0";
       });
       // 点击 的变为1
-      attrValue.isChecked = '1'
-    }
+      attrValue.isChecked = "1";
+    },
+    // 修改商品个数
+    changeSkuNum(e) {
+      // 如果输入的是非法的值
+      if (isNaN(e.target.value * 1) || e.target.value * 1 <= 0) {
+        this.skuNum = 1;
+      } else {
+        this.skuNum = Math.floor(e.target.value * 1);
+      }
+    },
+    // 添加到购物车
+    addShopCart() {
+      // 整理携带的参数
+      let cart = {
+        skuNum: this.skuNum,
+        skuId: this.$route.params.skuId,
+        skuInfo: this.skuInfo
+      };
+      this.$store.dispatch("addOrUpdataShopCart", cart);
+    },
   },
 };
 </script>

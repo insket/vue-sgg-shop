@@ -66,6 +66,14 @@ const routes = [
     meta: {
       isFooter: true
     }
+  },
+  {
+    path: '/addcartsuccess',
+    name: 'addcartsuccess',
+    component: () => import('@/page/AddCartSuccess'),
+    meta: {
+      isFooter: true
+    }
   }
 ]
 

@@ -51,3 +51,13 @@ export const reqGoodList = (skuid) => {
     url: `/api/item/${skuid}`,
   })
 }
+
+/*
+    将商品添加到购物车 / 更新商品个数
+*/
+export const reqAddOrUpdataShopCart = (skuId, skuNum) => {
+  return request({
+    method: 'post',
+    url: `/api/cart/addToCart/${skuId}/${skuNum}`,
+  })
+}
