@@ -2,5 +2,6 @@ module.exports = {
   rules: {
       "no-unused-vars": "off"
   },
-  "parser": "babel-eslint"
+  "parser": "babel-eslint",
+  "extends": ["vue", "standard", "plugin:vue/recommended"],
 }
