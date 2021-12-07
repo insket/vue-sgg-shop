@@ -30,6 +30,10 @@ const actions = {
       alert('添加失败,请重试')
     }
   },
+  // 修改购物车数据
+  async updataShopCart({commit}, {skuId, skuNum}) {
+    const result = await reqAddOrUpdataShopCart(skuId, skuNum)
+  }
 }
 
 const getters = {
