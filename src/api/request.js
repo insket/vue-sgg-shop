@@ -13,6 +13,10 @@ request.interceptors.request.use((config) => {
   if (store.state.detail.uuid_token) {
     config.headers.userTempId = store.state.detail.uuid_token
   }
+  // 携带token
+  if (store.state.loginAndRegister.userToken) {
+    config.headers.token = store.state.loginAndRegister.userToken
+  }
   // nprogress进度条开始
   nprogress.start()
   return config
@@ -23,7 +27,7 @@ request.interceptors.response.use((res) => {
   nprogress.done()
   return res.data
 }, (err) => {
-  return Promise.reject(err)
+  return Promise.reject(err.message)
 })
 
 

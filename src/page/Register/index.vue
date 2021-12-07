@@ -10,36 +10,40 @@
       </h3>
       <div class="content">
         <label>手机号:</label>
-        <input type="text" placeholder="请输入你的手机号" />
+        <input type="text" placeholder="请输入你的手机号" v-model="phone" />
         <span class="error-msg">错误提示信息</span>
       </div>
       <div class="content">
         <label>验证码:</label>
-        <input type="text" placeholder="请输入验证码" />
-        <img
-          ref="code"
-          src="http://182.92.128.115/api/user/passport/code"
-          alt="code"
-        />
+        <input type="text" placeholder="请输入验证码" v-model="code" />
+        <button class="verifi" @click="getCode">点击获取验证码</button>
         <span class="error-msg">错误提示信息</span>
       </div>
       <div class="content">
         <label>登录密码:</label>
-        <input type="text" placeholder="请输入你的登录密码" />
+        <input
+          type="password"
+          placeholder="请输入你的登录密码"
+          v-model="password"
+        />
         <span class="error-msg">错误提示信息</span>
       </div>
       <div class="content">
         <label>确认密码:</label>
-        <input type="text" placeholder="请输入确认密码" />
+        <input
+          type="password"
+          placeholder="请输入确认密码"
+          v-model="repassword"
+        />
         <span class="error-msg">错误提示信息</span>
       </div>
       <div class="controls">
-        <input name="m1" type="checkbox" />
+        <input name="m1" type="checkbox" :checked="isAgree" />
         <span>同意协议并注册《尚品汇用户协议》</span>
         <span class="error-msg">错误提示信息</span>
       </div>
       <div class="btn">
-        <button>完成注册</button>
+        <button @click="userRegister">完成注册</button>
       </div>
     </div>
 
@@ -62,8 +66,40 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 export default {
   name: "Register",
+  data() {
+    return {
+      phone: "", //手机号
+      code: "", // 验证码
+      password: "", // 密码
+      repassword: "", // 确认密码
+      isAgree: true, //是否同意
+    };
+  },
+  computed: {
+    ...mapState({
+      verCode: (state) => state.loginAndRegister.code,
+    }),
+  },
+  methods: {
+    // 获取验证码
+    async getCode() {
+      await this.$store.dispatch("getRegisterCode", this.phone);
+      // 将验证码输入code
+      this.code = this.verCode;
+    },
+    // 用户注册
+    userRegister() {
+      const { phone, code, password, repassword } = this;
+      // 验证信息
+      phone &&
+        code &&
+        password === repassword &&
+        this.$store.dispatch("getUserRegister", { phone, code, password });
+    },
+  },
 };
 </script>
 
@@ -120,8 +156,11 @@ export default {
         border: 1px solid #999;
       }
 
-      img {
-        vertical-align: sub;
+      .verifi {
+        width: 90px;
+        height: 25px;
+        font-size: 12px;
+        margin-left: 10px;
       }
 
       .error-msg {

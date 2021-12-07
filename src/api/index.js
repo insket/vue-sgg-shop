@@ -91,3 +91,45 @@ export const reqCheckStatus = (skuId, isChecked) => {
     url: `/api/cart/checkCart/${skuId}/${isChecked}`,
   })
 }
+
+/*
+    获取验证码
+*/
+export const reqRegisterCode = (phone) => {
+  return request({
+    method: 'get',
+    url: `/api/user/passport/sendCode/${phone}`,
+  })
+}
+
+/*
+    注册
+*/
+export const reqUserRegister = (data) => {
+  return request({
+    method: 'post',
+    url: `/api/user/passport/register`,
+    data
+  })
+}
+
+/*
+    登录
+*/
+export const reqUserLogin = (data) => {
+  return request({
+    method: 'post',
+    url: `/api/user/passport/login`,
+    data
+  })
+}
+
+/*
+    获取用户信息, 携带token
+*/
+export const reqUserInfo = () => {
+  return request({
+    method: 'get',
+    url: `/api/user/passport/auth/getUserInfo`
+  })
+}
