@@ -133,3 +133,13 @@ export const reqUserInfo = () => {
     url: `/api/user/passport/auth/getUserInfo`
   })
 }
+
+/*
+    退出登录
+*/
+export const reqLoginOut = () => {
+  return request({
+    method: 'get',
+    url: `/api/user/passport/logout`
+  })
+}

@@ -12,7 +12,7 @@
           </p>
           <p v-else>
             <span>{{userInfo.loginName}}</span>
-            <span class="register">退出登录</span>
+            <span class="register" @click="loginOut">退出登录</span>
           </p>
         </div>
         <div class="typeList">
@@ -97,6 +97,10 @@ export default {
         }
       }
     },
+    // 退出登录
+    loginOut() {
+      this.$store.dispatch('getLoginOut')
+    }
   },
 };
 </script>

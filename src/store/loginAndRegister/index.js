@@ -1,9 +1,10 @@
-import { reqRegisterCode, reqUserRegister, reqUserLogin, reqUserInfo } from '@/api'
+import { reqRegisterCode, reqUserRegister, reqUserLogin, reqUserInfo, reqLoginOut } from '@/api'
 import router from '@/router'
+import { setToken, getToken, deleteToken } from '@/utils/token'
 
 const state = {
   code: '', // 验证码
-  userToken: '', // 用户token
+  userToken: getToken(), // 用户token
   userInfo: {} // 用户信息
 }
 
@@ -16,7 +17,12 @@ const mutations = {
   },
   GETUSERINFO(state, userInfo) {
     state.userInfo = userInfo
-  }
+  },
+  GETLOGINOUT(state) {
+    // 退出登录清空数据
+    state.userInfo = {}
+    deleteToken()
+  },
 }
 
 const actions = {
@@ -40,6 +46,7 @@ const actions = {
     const result = await reqUserLogin(user)
     if (result.code === 200) {
       commit('GETUSERLOGIN', result.data.token)
+      setToken(result.data.token)
       router.push('/home')
     } else {
       alert(result.message)
@@ -50,6 +57,14 @@ const actions = {
     const result = await reqUserInfo()
     if (result.code === 200) {
       commit('GETUSERINFO', result.data)
+    }
+  },
+  // 退出登录
+  async getLoginOut({commit}) {
+    const result = await reqLoginOut()
+    if (result.code === 200) {
+      await commit('GETLOGINOUT')
+      await router.push('/home')
     }
   }
 }

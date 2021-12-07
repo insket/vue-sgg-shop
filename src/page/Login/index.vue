@@ -81,7 +81,7 @@ export default {
   name: "Login",
   data() {
     return {
-      phone: "", // 手机
+      phone: "18168060443", // 手机
       password: "", // 密码
     };
   },
