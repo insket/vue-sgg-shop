@@ -21,6 +21,7 @@ const mutations = {
   GETLOGINOUT(state) {
     // 退出登录清空数据
     state.userInfo = {}
+    state.userToken = ''
     deleteToken()
   },
 }

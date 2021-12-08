@@ -1,5 +1,7 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router'
+import store from '@/store'
+import {deleteToken} from '@/utils/token'
 
 Vue.use(VueRouter)
 
@@ -82,13 +84,49 @@ const routes = [
     meta: {
       isFooter: true
     }
-  }
+  },
+  {
+    path: '/trade',
+    name: 'trade',
+    component: () => import('@/page/Trade'),
+    meta: {
+      isFooter: true
+    }
+  } 
 ]
 
-export default new VueRouter({
+let router =  new VueRouter({
   routes,
   // 滚动行为
   scrollBehavior () {
     return {y: 0}
   }
 })
+
+// 路由前置守卫
+router.beforeEach(async (to, from, next) => {
+  const token = store.state.loginAndRegister.userToken
+  const userInfo = store.state.loginAndRegister.userInfo.name
+  // 登录
+  if (token) {
+    // 登录则不能去login
+    if (to.path === '/login' || to.path === '/register') {
+      alert('已经登陆过了')
+      next('/home')
+    } else {
+      // 判断是否有用户信息
+      if (userInfo) {
+        next()
+      } else {
+        // deleteToken()
+        await store.dispatch('getUserInfo')
+        next()
+      }
+    }
+  } else {
+    next()
+  }
+
+})
+
+export default router

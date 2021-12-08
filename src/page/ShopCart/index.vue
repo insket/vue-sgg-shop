@@ -90,7 +90,8 @@
           <i class="summoney">{{ totalPrice }}</i>
         </div>
         <div class="sumbtn">
-          <a class="sum-btn" href="###" target="_blank">结算</a>
+          <!-- 没有勾选商品 不能结算 -->
+          <router-link :class="{active:checkedNum===0}" to="/trade">结算</router-link>
         </div>
       </div>
     </div>
@@ -396,6 +397,10 @@ export default {
           font-family: "Microsoft YaHei";
           background: #e1251b;
           overflow: hidden;
+        }
+        .active {
+          pointer-events: none;
+          background-color: gray;
         }
       }
     }
