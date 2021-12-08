@@ -1,7 +1,9 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router'
 import store from '@/store'
-import {deleteToken} from '@/utils/token'
+import {
+  deleteToken
+} from '@/utils/token'
 
 Vue.use(VueRouter)
 
@@ -11,14 +13,14 @@ let originReplace = VueRouter.prototype.replace
 
 // 重写push|replace 解决push|replace多次点击报错问题
 // 第一个参数是传递参数，往哪跳转  第二第三 成功失败的回调
-VueRouter.prototype.push = function(location, reslove, reject) {
+VueRouter.prototype.push = function (location, reslove, reject) {
   if (reslove && reject) {
     originPush.call(this, location, reslove, reject)
   } else {
     originPush.call(this, location, () => {}, () => {})
   }
 }
-VueRouter.prototype.replace = function(location, reslove, reject) {
+VueRouter.prototype.replace = function (location, reslove, reject) {
   if (reslove && reject) {
     originReplace.call(this, location, reslove, reject)
   } else {
@@ -27,8 +29,7 @@ VueRouter.prototype.replace = function(location, reslove, reject) {
 }
 
 //路由配置
-const routes = [
-  {
+const routes = [{
     path: '/',
     redirect: '/home'
   },
@@ -92,21 +93,31 @@ const routes = [
     meta: {
       isFooter: true
     }
-  } 
+  },
+  {
+    path: '/pay',
+    name: 'pay',
+    component: () => import('@/page/Pay'),
+    meta: {
+      isFooter: true
+    }
+  },
 ]
 
-let router =  new VueRouter({
+let router = new VueRouter({
   routes,
   // 滚动行为
-  scrollBehavior () {
-    return {y: 0}
+  scrollBehavior() {
+    return {
+      y: 0
+    }
   }
 })
 
 // 路由前置守卫
 router.beforeEach(async (to, from, next) => {
   const token = store.state.loginAndRegister.userToken
-  const userInfo = store.state.loginAndRegister.userInfo.name
+  const userName = store.state.loginAndRegister.userInfo.name
   // 登录
   if (token) {
     // 登录则不能去login
@@ -115,10 +126,9 @@ router.beforeEach(async (to, from, next) => {
       next('/home')
     } else {
       // 判断是否有用户信息
-      if (userInfo) {
+      if (userName) {
         next()
       } else {
-        // deleteToken()
         await store.dispatch('getUserInfo')
         next()
       }

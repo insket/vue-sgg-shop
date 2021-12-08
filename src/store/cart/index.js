@@ -19,7 +19,6 @@ const actions = {
   // 删除购物车商品
   async deleteCart({commit}, skuId) {
     const result = await reqDeleteCart(skuId)
-    console.log(result);
   },
   // 切换商品选中状态
   async changeCheckedStatus({commit}, {skuId, isChecked}) {

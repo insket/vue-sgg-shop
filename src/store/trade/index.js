@@ -1,8 +1,11 @@
-import { reqUserAdress, reqOrderInfo } from '@/api'
+import { reqUserAdress, reqOrderInfo, reqSubmitOrder, reqPayment } from '@/api'
+import router from '@/router'
 
 const state = {
   userAddress: [], // 地址
-  orderInfo: {} // 商品清单
+  orderInfo: {}, // 商品清单
+  data: '', //订单号
+  payInfo: {} // 支付订单信息
 }
 
 const mutations = {
@@ -11,6 +14,12 @@ const mutations = {
   },
   GETORDERINFO(state, orderInfo) {
     state.orderInfo = orderInfo
+  },
+  GETSUBMITORDER(state, data) {
+    state.data = data
+  },
+  GETPAYMENT(state, payInfo) {
+    state.payInfo = payInfo
   },
 }
 
@@ -28,7 +37,27 @@ const actions = {
     if (result.code === 200) {
       commit('GETORDERINFO', result.data)
     }
-  }
+  },
+  // 提交订单
+  async getSubmitOrder({commit}, {tradeNo, data}) {
+    const result = await reqSubmitOrder(tradeNo, data)
+    if (result.code === 200) {
+      commit('GETSUBMITORDER', result.data)
+      router.push(`/pay?orderId=${result.data}`)
+    } else {
+      alert('提交失败')
+    }
+  },
+  // 获取支付订单信息
+  async getPayment({commit}, orderId) {
+    const result = await reqPayment(orderId)
+    console.log(result);
+    if (result.code === 200) {
+      commit('GETPAYMENT', result.data)
+    } else {
+      alert('请求失败')
+    }
+  },
 }
 
 const getters = {}

@@ -101,13 +101,13 @@
       </div>
       <div class="receiveInfo">
         寄送至:
-        <span>{{ userDefaultAddress.fullAddress }}</span>
-        收货人：<span>{{ userDefaultAddress.consignee }}</span>
-        <span>{{ userDefaultAddress.phone }}</span>
+        <span>{{ userDefaultAddress.fullAddress }}</span>&nbsp;
+        收货人：<span>{{ userDefaultAddress.consignee }}</span>&nbsp;
+        <span>手机:{{ userDefaultAddress.phoneNum }}</span>
       </div>
     </div>
     <div class="sub clearFix">
-      <router-link class="subBtn" to="/pay">提交订单</router-link>
+      <div class="subBtn" @click="submitOrder">提交订单</div>
     </div>
   </div>
 </template>
@@ -146,6 +146,21 @@ export default {
         item.isDefault = "0";
       });
       address.isDefault = "1";
+    },
+    // 提交订单
+    submitOrder() {
+      //  交易编码
+      const { tradeNo } = this.orderInfo;
+      // 交易信息
+      const data = {
+        consignee: this.userAddress.consignee,
+        consigneeTel: this.userAddress.phoneNum,
+        deliveryAddress: this.userAddress.fullAddress,
+        paymentWay: "ONLINE",
+        orderComment: this.msg,
+        orderDetailList: this.orderInfo.detailArrayList
+      };
+      this.$store.dispatch("getSubmitOrder", {tradeNo, data});
     },
   },
 };
