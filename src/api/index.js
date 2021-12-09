@@ -194,3 +194,13 @@ export const reqPayStatus = (orderId) => {
     url: `/api/payment/weixin/queryPayStatus/${orderId}`
   })
 }
+
+/*
+    获取订单订单列表
+*/
+export const reqOrderList = (page, limit) => {
+  return request({
+    method: 'get',
+    url: `/api/order/auth/${page}/${limit}`
+  })
+}

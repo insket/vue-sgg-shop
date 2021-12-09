@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import Vue from 'vue'
 import VueRouter from 'vue-router'
 import store from '@/store'
 import {
@@ -17,99 +17,132 @@ VueRouter.prototype.push = function (location, reslove, reject) {
   if (reslove && reject) {
     originPush.call(this, location, reslove, reject)
   } else {
-    originPush.call(this, location, () => {}, () => {})
+    originPush.call(
+      this,
+      location,
+      () => {},
+      () => {}
+    )
   }
 }
 VueRouter.prototype.replace = function (location, reslove, reject) {
   if (reslove && reject) {
     originReplace.call(this, location, reslove, reject)
   } else {
-    originReplace.call(this, location, () => {}, () => {})
+    originReplace.call(
+      this,
+      location,
+      () => {},
+      () => {}
+    )
   }
 }
 
 //路由配置
 const routes = [{
     path: '/',
-    redirect: '/home'
+    redirect: '/home',
   },
   {
     path: '/home',
     component: () => import('@/page/Home'),
     meta: {
-      isFooter: true
-    }
+      isFooter: true,
+    },
   },
   {
     path: '/login',
     component: () => import('@/page/Login'),
     meta: {
-      isFooter: false
-    }
+      isFooter: false,
+    },
   },
   {
     path: '/register',
     component: () => import('@/page/Register'),
     meta: {
-      isFooter: false
-    }
+      isFooter: false,
+    },
   },
   {
     path: '/search/:keyword?',
     name: 'search',
     component: () => import('@/page/Search'),
     meta: {
-      isFooter: true
-    }
+      isFooter: true,
+    },
   },
   {
     path: '/detail/:skuId',
     name: 'detail',
     component: () => import('@/page/Detail'),
     meta: {
-      isFooter: true
-    }
+      isFooter: true,
+    },
   },
   {
     path: '/addcartsuccess',
     name: 'addcartsuccess',
     component: () => import('@/page/AddCartSuccess'),
     meta: {
-      isFooter: true
-    }
+      isFooter: true,
+    },
   },
   {
     path: '/shopcart',
     name: 'shopcart',
     component: () => import('@/page/ShopCart'),
     meta: {
-      isFooter: true
-    }
+      isFooter: true,
+    },
   },
   {
     path: '/trade',
     name: 'trade',
     component: () => import('@/page/Trade'),
     meta: {
-      isFooter: true
-    }
+      isFooter: true,
+    },
   },
   {
     path: '/pay',
     name: 'pay',
     component: () => import('@/page/Pay'),
     meta: {
-      isFooter: true
-    }
+      isFooter: true,
+    },
   },
   {
     path: '/paysuccess',
     name: 'paysuccess',
     component: () => import('@/page/PaySuccess'),
     meta: {
-      isFooter: true
+      isFooter: true,
     }
-  }
+  },
+  {
+    path: '/center',
+    name: 'center',
+    component: () => import('@/page/Center'),
+    meta: {
+      isFooter: true,
+    },
+    children: [{
+        path: 'myorder',
+        name: 'myorder',
+        component: () => import('@/page/Center/myOrder')
+      },
+      {
+        path: 'grouporder',
+        name: 'grouporder',
+        component: () => import('@/page/Center/groupOrder')
+      },
+      {
+        path: '/center',
+        redirect: '/center/myorder'
+      },
+    ]
+  },
 ]
 
 let router = new VueRouter({
@@ -117,34 +150,44 @@ let router = new VueRouter({
   // 滚动行为
   scrollBehavior() {
     return {
-      y: 0
+      y: 0,
     }
-  }
+  },
 })
 
 // 路由前置守卫
 router.beforeEach(async (to, from, next) => {
   const token = store.state.loginAndRegister.userToken
   const userName = store.state.loginAndRegister.userInfo.name
+
   // 登录
   if (token) {
     // 登录则不能去login
     if (to.path === '/login' || to.path === '/register') {
       alert('已经登陆过了')
-      next('/home')
+      next('/')
     } else {
       // 判断是否有用户信息
       if (userName) {
         next()
       } else {
-        await store.dispatch('getUserInfo')
-        next()
+        //登陆了且没有用户信息
+        //在路由跳转之前获取用户信息且放行
+        try {
+          await store.dispatch('getUserInfo');
+          // console.log('1');
+          next();
+        } catch (error) {
+          //token失效从新登录
+          await store.dispatch('userLogout');
+          // console.log('2');
+          next('/login')
+        }
       }
     }
   } else {
     next()
   }
-
 })
 
 export default router

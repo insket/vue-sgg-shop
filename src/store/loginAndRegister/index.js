@@ -50,7 +50,7 @@ const actions = {
       setToken(result.data.token)
       router.push('/home')
     } else {
-      alert(result.message)
+      alert("登陆失败")
     }
   },
   // 获取用户信息
