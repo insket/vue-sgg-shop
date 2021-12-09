@@ -51,7 +51,6 @@ const actions = {
   // 获取支付订单信息
   async getPayment({commit}, orderId) {
     const result = await reqPayment(orderId)
-    console.log(result);
     if (result.code === 200) {
       commit('GETPAYMENT', result.data)
     } else {

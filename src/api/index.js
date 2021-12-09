@@ -184,3 +184,13 @@ export const reqPayment = (orderId) => {
     url: `/api/payment/weixin/createNative/${orderId}`
   })
 }
+
+/*
+    获取订单支付状态
+*/
+export const reqPayStatus = (orderId) => {
+  return request({
+    method: 'get',
+    url: `/api/payment/weixin/queryPayStatus/${orderId}`
+  })
+}

@@ -102,6 +102,14 @@ const routes = [{
       isFooter: true
     }
   },
+  {
+    path: '/paysuccess',
+    name: 'paysuccess',
+    component: () => import('@/page/PaySuccess'),
+    meta: {
+      isFooter: true
+    }
+  }
 ]
 
 let router = new VueRouter({
