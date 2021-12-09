@@ -48,7 +48,8 @@ const actions = {
     if (result.code === 200) {
       commit('GETUSERLOGIN', result.data.token)
       setToken(result.data.token)
-      router.push('/home')
+      let toPath = router.currentRoute.query.redirect || 'home'
+      router.push(toPath)
     } else {
       alert("登陆失败")
     }

@@ -103,6 +103,14 @@ const routes = [{
     meta: {
       isFooter: true,
     },
+    // 路由独享守卫
+    beforeEnter: (to, from, next) => {
+      if (from.path === '/shopcart') {
+        next()
+      } else {
+        next(false)
+      }
+    }
   },
   {
     path: '/pay',
@@ -111,6 +119,13 @@ const routes = [{
     meta: {
       isFooter: true,
     },
+    beforeEnter: (to, from, next) => {
+      if (from.path === '/trade') {
+        next()
+      } else {
+        next(false)
+      }
+    }
   },
   {
     path: '/paysuccess',
@@ -118,6 +133,13 @@ const routes = [{
     component: () => import('@/page/PaySuccess'),
     meta: {
       isFooter: true,
+    },
+    beforeEnter: (to, from, next) => {
+      if (from.path === '/pay') {
+        next()
+      } else {
+        next(false)
+      }
     }
   },
   {
@@ -175,17 +197,24 @@ router.beforeEach(async (to, from, next) => {
         //在路由跳转之前获取用户信息且放行
         try {
           await store.dispatch('getUserInfo');
-          // console.log('1');
+          console.log('1');
           next();
         } catch (error) {
           //token失效从新登录
           await store.dispatch('userLogout');
-          // console.log('2');
+          console.log('2');
           next('/login')
         }
       }
     }
   } else {
+    let toPath = to.path
+    // 需要登陆 的路径
+    const needLogin = ['/trade', '/pay', '/center/myorder', '/center/grouporder']
+    let path = needLogin.indexOf(toPath) !== -1
+    if (path) {
+      next('/login?redirect=' + toPath);
+    }
     next()
   }
 })
